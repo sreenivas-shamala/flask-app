@@ -86,13 +86,11 @@ pipeline {
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )])
                 {
                 sh '''
-                echo "=== Deployments ==="
+                
                 kubectl get deployments
 
-                echo "=== Pods ==="
                 kubectl get pods
-
-                echo "=== Services ==="
+               
                 kubectl get services
                 
                 '''
