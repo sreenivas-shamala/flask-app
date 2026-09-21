@@ -42,8 +42,8 @@ pipeline {
             steps { 
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )]) 
                 { 
-                    sh 
-                    ''' echo "KUBECONFIG=$KUBECONFIG" 
+                    sh ''' 
+                    echo "KUBECONFIG=$KUBECONFIG" 
                     echo "=== kubectl ===" 
                     which kubectl 
                     kubectl version --client 
