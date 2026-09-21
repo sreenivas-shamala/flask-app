@@ -38,6 +38,25 @@ pipeline {
             }
         }
 
+        stage('Test Kubernetes') { 
+            steps { 
+                withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )]) 
+                { 
+                    sh 
+                    ''' echo "KUBECONFIG=$KUBECONFIG" 
+                    echo "=== kubectl ===" 
+                    which kubectl 
+                    kubectl version --client 
+                    echo "=== context ===" 
+                    kubectl config current-context 
+                    echo "=== cluster ===" 
+                    kubectl cluster-info 
+                    echo "=== nodes ===" 
+                    kubectl get nodes 
+                    ''' 
+                }
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )])
