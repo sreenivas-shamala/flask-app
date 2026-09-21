@@ -64,12 +64,16 @@ pipeline {
                 sh '''
                 echo "=== kubectl version ===" 
                 kubectl version --client 
+                
                 echo "=== Kubernetes context ===" 
                 kubectl config current-context || true 
+                
                 echo "=== Kubernetes contexts ===" 
                 kubectl config get-contexts || true 
+                
                 echo "=== Kubernetes nodes ===" 
                 kubectl get nodes 
+                
                 echo "=== Applying deployment ===" 
                 kubectl apply -f flask-app.yaml
                 '''
@@ -82,7 +86,13 @@ pipeline {
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )])
                 {
                 sh '''
+                echo "=== Deployments ==="
+                kubectl get deployments
+
+                echo "=== Pods ==="
                 kubectl get pods
+
+                echo "=== Services ==="
                 kubectl get services
                 
                 '''
