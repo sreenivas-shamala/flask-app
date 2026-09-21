@@ -69,9 +69,9 @@ pipeline {
                 echo "=== Kubernetes contexts ===" 
                 kubectl config get-contexts || true 
                 echo "=== Kubernetes nodes ===" 
-                kubectl get nodes echo "=== Applying deployment ===" 
+                kubectl get nodes 
+                echo "=== Applying deployment ===" 
                 kubectl apply -f flask-app.yaml
-                
                 '''
                }  
             }
