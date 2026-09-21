@@ -60,10 +60,13 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
+                withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )])
+                {
                 sh '''
                 kubectl get pods
                 kubectl get services
                 '''
+                }    
             }
         }
     }
