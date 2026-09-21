@@ -41,7 +41,16 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                  kubectl apply -f flask-app.yaml
+                echo "=== kubectl version ===" 
+                kubectl version --client 
+                echo "=== Kubernetes context ===" 
+                kubectl config current-context || true 
+                echo "=== Kubernetes contexts ===" 
+                kubectl config get-contexts || true 
+                echo "=== Kubernetes nodes ===" 
+                kubectl get nodes echo "=== Applying deployment ===" 
+                kubectl apply -f flask-app.yaml
+                
                 '''
             }
         }
