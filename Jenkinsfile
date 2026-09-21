@@ -97,9 +97,9 @@ pipeline {
                 
                 '''
                 }    
-            }
-        }
-    }
+           
+           }
+      }
 
     post {
         success {
