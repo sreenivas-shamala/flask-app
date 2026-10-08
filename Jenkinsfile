@@ -47,13 +47,18 @@ pipeline {
                     echo "KUBECONFIG=$KUBECONFIG" 
                     echo "=== kubectl ===" 
                     which kubectl 
+                                  
+                    echo "=== kubectl version ===" 
                     kubectl version --client 
-                    echo "=== context ===" 
-                    kubectl config current-context 
-                    echo "=== cluster ===" 
-                    kubectl cluster-info 
-                    echo "=== nodes ===" 
-                    kubectl get nodes 
+                
+                    echo "=== Kubernetes context ===" 
+                    kubectl config current-context || true 
+                
+                    echo "=== Kubernetes contexts ===" 
+                    kubectl config get-contexts || true 
+                
+                    echo "=== Kubernetes nodes ===" 
+                    kubectl get nodes  
                     ''' 
                 }
             }
@@ -63,21 +68,7 @@ pipeline {
                 withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
                 { 
                 sh '''
-
-                set -x
-                
-                echo "=== kubectl version ===" 
-                kubectl version --client 
-                
-                echo "=== Kubernetes context ===" 
-                kubectl config current-context || true 
-                
-                echo "=== Kubernetes contexts ===" 
-                kubectl config get-contexts || true 
-                
-                echo "=== Kubernetes nodes ===" 
-                kubectl get nodes 
-                
+                               
                 echo "=== Applying deployment ===" 
                 kubectl apply -f flask-app.yaml
                 '''
