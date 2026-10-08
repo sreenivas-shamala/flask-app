@@ -40,30 +40,16 @@ pipeline {
             }
         }
 
-stage('Test Kubernetes Network') {
+       stage('Check kubectl') {
     steps {
-        withCredentials([
-            file(
-                credentialsId: 'k8s_config',
-                variable: 'KUBECONFIG'
-            )
-        ]) {
-            sh '''
-                echo "=== DNS ==="
-                getent hosts kubernetes.docker.internal || true
-
-                echo "=== Kubernetes API ==="
-                curl -k -I https://kubernetes.docker.internal:6443 || true
-
-                echo "=== Kubectl ==="
-                kubectl config current-context
-                kubectl get nodes
-            '''
-        }
+        sh '''
+            echo "PATH=$PATH"
+            which kubectl
+            kubectl version --client
+        '''
     }
 }
-        
-      stage('Test Kubernetes') {
+        stage('Test Kubernetes') {
     steps {
         withCredentials([
             file(
@@ -74,52 +60,31 @@ stage('Test Kubernetes Network') {
             sh '''
                 set -e
 
-                echo "=== Kubeconfig ==="
+                echo "===== kubectl ====="
+                which kubectl
+                kubectl version --client
+
+                echo "===== KUBECONFIG ====="
                 ls -l "$KUBECONFIG"
 
-                echo "=== Context ==="
-                KUBECONFIG="$KUBECONFIG" kubectl config current-context
+                echo "===== CONTEXT ====="
+                kubectl config current-context
 
-                echo "=== User ==="
-                KUBECONFIG="$KUBECONFIG" kubectl auth whoami
-
-                echo "=== Nodes ==="
-                KUBECONFIG="$KUBECONFIG" kubectl get nodes --request-timeout=10s
-            '''
-        }
-    }
-}
-stage('Debug Kubernetes') {
-    steps {
-        withCredentials([
-            file(
-                credentialsId: 'k8s_config',
-                variable: 'KUBECONFIG'
-            )
-        ]) {
-            sh '''
-                set -x
-
-                echo "=== Server ==="
+                echo "===== API SERVER ====="
                 kubectl config view --minify \
                     -o jsonpath='{.clusters[0].cluster.server}'
                 echo
 
-                echo "=== Context ==="
-                kubectl config current-context
+                echo "===== CLUSTER INFO ====="
+                kubectl cluster-info
 
-                echo "=== User ==="
-                kubectl config view --minify \
-                    -o jsonpath='{.contexts[0].context.user}'
-                echo
-
-                echo "=== API test ==="
-                timeout 15s kubectl get --raw=/version
+                echo "===== NODES ====="
+                kubectl get nodes
             '''
         }
     }
 }
-        
+             
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
