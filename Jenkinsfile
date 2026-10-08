@@ -39,30 +39,38 @@ pipeline {
         }
 
                 
-        stage('Test Kubernetes') { 
-            steps { 
-                withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )]) 
-                { 
-                    sh ''' 
-                    echo "KUBECONFIG=$KUBECONFIG" 
-                    echo "=== kubectl ===" 
-                    which kubectl 
-                                  
-                    echo "=== kubectl version ===" 
-                    kubectl version --client 
-                
-                    echo "=== Kubernetes context ===" 
-                    kubectl config current-context || true 
-                
-                    echo "=== Kubernetes contexts ===" 
-                    kubectl config get-contexts || true 
-                
-                    echo "=== Kubernetes nodes ===" 
-                    kubectl get nodes  
-                    ''' 
-                }
-            }
+        stage('Test Kubernetes') {
+    steps {
+        withCredentials([
+            file(
+                credentialsId: 'k8s-config',
+                variable: 'KUBECONFIG'
+            )
+        ]) {
+            sh '''
+                set -x
+
+                echo "=== Kubeconfig file ==="
+                ls -l "$KUBECONFIG"
+
+                echo "=== Kubeconfig content check ==="
+                grep -E '^(apiVersion|kind|current-context|contexts:|clusters:|users:)' "$KUBECONFIG" || true
+
+                echo "=== Explicit kubectl ==="
+                KUBECONFIG="$KUBECONFIG" kubectl config get-contexts
+
+                echo "=== Current context ==="
+                KUBECONFIG="$KUBECONFIG" kubectl config current-context
+
+                echo "=== Cluster ==="
+                KUBECONFIG="$KUBECONFIG" kubectl cluster-info
+
+                echo "=== Nodes ==="
+                KUBECONFIG="$KUBECONFIG" kubectl get nodes
+            '''
         }
+    }
+}
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
