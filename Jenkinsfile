@@ -87,6 +87,36 @@ stage('Test Kubernetes Network') {
         }
     }
 }
+stage('Debug Kubernetes') {
+    steps {
+        withCredentials([
+            file(
+                credentialsId: 'k8s_config',
+                variable: 'KUBECONFIG'
+            )
+        ]) {
+            sh '''
+                set -x
+
+                echo "=== Server ==="
+                kubectl config view --minify \
+                    -o jsonpath='{.clusters[0].cluster.server}'
+                echo
+
+                echo "=== Context ==="
+                kubectl config current-context
+
+                echo "=== User ==="
+                kubectl config view --minify \
+                    -o jsonpath='{.contexts[0].context.user}'
+                echo
+
+                echo "=== API test ==="
+                timeout 15s kubectl get --raw=/version
+            '''
+        }
+    }
+}
         
         stage('Deploy to Kubernetes') {
             steps {
