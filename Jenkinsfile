@@ -38,12 +38,34 @@ pipeline {
             }
         }
 
-                
+stage('Test Kubernetes Network') {
+    steps {
+        withCredentials([
+            file(
+                credentialsId: 'k8s_config',
+                variable: 'KUBECONFIG'
+            )
+        ]) {
+            sh '''
+                echo "=== DNS ==="
+                getent hosts kubernetes.docker.internal || true
+
+                echo "=== Kubernetes API ==="
+                curl -k -I https://kubernetes.docker.internal:6443 || true
+
+                echo "=== Kubectl ==="
+                kubectl config current-context
+                kubectl get nodes
+            '''
+        }
+    }
+}
+        
         stage('Test Kubernetes') {
     steps {
         withCredentials([
             file(
-                credentialsId: 'k8s-config',
+                credentialsId: 'k8s_config',
                 variable: 'KUBECONFIG'
             )
         ]) {
