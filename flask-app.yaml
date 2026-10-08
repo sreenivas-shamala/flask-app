@@ -1,4 +1,4 @@
-apiVersion: apps/v3
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-app
@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: flask-app:v3
+          image: flask-app:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
 ---
-apiVersion: v3
+apiVersion: v1
 kind: Service
 metadata:
   name: flask-app-service
