@@ -5,8 +5,10 @@ pipeline {
     environment {
         IMAGE_NAME = "sreenivasulusamala108/flask-app"
         IMAGE_TAG = "v1"
+        PATH = "/usr/local/bin:${env.PATH}"
     }
 
+        
     stages {
 
         stage('Checkout') {
