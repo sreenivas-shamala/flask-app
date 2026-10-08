@@ -62,6 +62,9 @@ pipeline {
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )])
                 { 
                 sh '''
+
+                set -x
+                
                 echo "=== kubectl version ===" 
                 kubectl version --client 
                 
