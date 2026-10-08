@@ -41,7 +41,7 @@ pipeline {
                 
         stage('Test Kubernetes') { 
             steps { 
-                withCredentials([file( credentialsId: 'k8s-config', variable: 'KUBECONFIG' )]) 
+                withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )]) 
                 { 
                     sh ''' 
                     echo "KUBECONFIG=$KUBECONFIG" 
@@ -60,7 +60,7 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file( credentialsId: 'k8s-config', variable: 'KUBECONFIG' )])
+                withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
                 { 
                 sh '''
 
@@ -87,7 +87,7 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                withCredentials([file( credentialsId: 'k8s-config', variable: 'KUBECONFIG' )])
+                withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
                 {
                 sh '''
                 
