@@ -61,7 +61,7 @@ stage('Test Kubernetes Network') {
     }
 }
         
-        stage('Test Kubernetes') {
+       stage('Test Kubernetes') {
     steps {
         withCredentials([
             file(
@@ -70,29 +70,21 @@ stage('Test Kubernetes Network') {
             )
         ]) {
             sh '''
-                set -x
+                set -e
 
-                echo "=== Kubeconfig file ==="
-                ls -l "$KUBECONFIG"
+                echo "=== Kubernetes context ==="
+                kubectl config current-context
 
-                echo "=== Kubeconfig content check ==="
-                grep -E '^(apiVersion|kind|current-context|contexts:|clusters:|users:)' "$KUBECONFIG" || true
+                echo "=== Kubernetes nodes ==="
+                kubectl get nodes
 
-                echo "=== Explicit kubectl ==="
-                KUBECONFIG="$KUBECONFIG" kubectl config get-contexts
-
-                echo "=== Current context ==="
-                KUBECONFIG="$KUBECONFIG" kubectl config current-context
-
-                echo "=== Cluster ==="
-                KUBECONFIG="$KUBECONFIG" kubectl cluster-info
-
-                echo "=== Nodes ==="
-                KUBECONFIG="$KUBECONFIG" kubectl get nodes
+                echo "=== Kubernetes services ==="
+                kubectl get svc
             '''
         }
     }
 }
+        
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file( credentialsId: 'k8s_config', variable: 'KUBECONFIG' )])
