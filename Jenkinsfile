@@ -92,7 +92,8 @@ pipeline {
                 kubectl get pods
                
                 kubectl get services
-                
+
+                kubectl port-forward service/flask-app-service 8082:80
                 '''
                 }    
            
