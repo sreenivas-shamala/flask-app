@@ -61,7 +61,7 @@ stage('Test Kubernetes Network') {
     }
 }
         
-       stage('Test Kubernetes') {
+      stage('Test Kubernetes') {
     steps {
         withCredentials([
             file(
@@ -72,14 +72,17 @@ stage('Test Kubernetes Network') {
             sh '''
                 set -e
 
-                echo "=== Kubernetes context ==="
-                kubectl config current-context
+                echo "=== Kubeconfig ==="
+                ls -l "$KUBECONFIG"
 
-                echo "=== Kubernetes nodes ==="
-                kubectl get nodes
+                echo "=== Context ==="
+                KUBECONFIG="$KUBECONFIG" kubectl config current-context
 
-                echo "=== Kubernetes services ==="
-                kubectl get svc
+                echo "=== User ==="
+                KUBECONFIG="$KUBECONFIG" kubectl auth whoami
+
+                echo "=== Nodes ==="
+                KUBECONFIG="$KUBECONFIG" kubectl get nodes --request-timeout=10s
             '''
         }
     }
