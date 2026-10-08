@@ -38,6 +38,33 @@ pipeline {
             }
         }
 
+        stage('Check Kubernetes') {
+            steps {
+                   sh '''
+                     echo "USER:"
+                     whoami
+
+                     echo "HOME:"
+                     echo $HOME
+
+                     echo "KUBECONFIG:"
+                     echo ${KUBECONFIG:-not-set}
+
+                     echo "Kube config:"
+                     ls -la ~/.kube/ || true
+
+                    echo "Contexts:"
+                    kubectl config get-contexts
+
+                    echo "Current context:"
+                    kubectl config current-context
+
+                    echo "Nodes:"
+                    kubectl get nodes
+              '''
+          }
+       }
+        
         stage('Test Kubernetes') { 
             steps { 
                 withCredentials([file( credentialsId: 'kubeconfig', variable: 'KUBECONFIG' )]) 
