@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "sreenivasulusamala108/flask-app"
-        IMAGE_TAG = "v1"
+        IMAGE_TAG = "v2"
         PATH = "/usr/local/bin:${env.PATH}"
     }
 
