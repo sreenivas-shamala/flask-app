@@ -70,11 +70,6 @@ pipeline {
                 echo "===== CONTEXT ====="
                 kubectl config current-context
 
-                echo "===== API SERVER ====="
-                kubectl config view --minify \
-                    -o jsonpath='{.clusters[0].cluster.server}'
-                echo
-
                 echo "===== CLUSTER INFO ====="
                 kubectl cluster-info
 
